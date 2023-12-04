@@ -5,12 +5,12 @@
       <div class="fl1 taC fs24 fwb">{{ props.role.name }}</div>
     </div>
     <div class="flxR jcSB gap5 mt5 fs12 h90 wfull pl5 pr5 bbox">
-      <div class="flxC bcgray1 p10 bdr4 fl1">
-        <div class="fs14">Abilities</div>
+      <div class="flxC bcgray1 p12 bdr4 fl1">
+        <div class="fs14 tcwarning">Abilities:</div>
         <div v-for="item in props.role.abilities" >{{ item.ability.name }}</div>
       </div>
-      <div class="flxC bcgray1 p10 bdr4">
-        <div class="fs14">profile</div>
+      <div class="flxC bcgray1 p12 bdr4">
+        <div class="fs14 tcwarning">profile:</div>
         <div class="flxR gap10">
           <div >Height: {{ props.role.height }}</div>
           <div >Weight: {{ props.role.weight }}</div>
