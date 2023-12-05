@@ -17,7 +17,7 @@ type detailType = {
   height: number,
   weight: number
 }
-type roleType = nameType & detailType
+type roleType = (nameType & detailType) | void
 const baseUrl = 'https://pokeapi.co/api/v2/pokemon'
 const page = ref({
   size: 20,
@@ -38,8 +38,7 @@ async function getList() {
   total.value = data?.data.count
   const tempNameArr = data?.data.results as nameType[]
   roleList.value.splice(0)
-  for (let i = 0; i < tempNameArr.length; i++) {
-    let item = tempNameArr[i] 
+  roleList.value = await Promise.all(tempNameArr.map(async item => {
     const [err1, ret] = await to(axios.get(item.url))
     if (err1) console.log(err1)
     const data1 = ret?.data
@@ -47,12 +46,12 @@ async function getList() {
       ...data1,
       img: data1.sprites.back_default
     } as detailType
-    roleList.value.push({
+    return {
       name: item.name,
       url: item.url,
       ...detail
-    }) 
-  }
+    }
+  }))
 }
 getList()
 function jumpPage(i: number) {
@@ -64,15 +63,15 @@ const resultList = computed(()=>{
   console.log(nameWord.value)
   let temp = [] as roleType[]
   if (nameWord.value) {
-    temp = roleList.value.filter(item => item.name.includes(nameWord.value))
+    temp = roleList.value.filter(item => item?.name.includes(nameWord.value))
   } else {
     temp = roleList.value
   }
   return temp.sort((a,b)=>{
     if (experienceSort.value === 'asc') {
-      return a.base_experience - b.base_experience
+      return a && b? a.base_experience - b.base_experience : 0
     } else {
-      return b.base_experience - a.base_experience
+      return a && b? b.base_experience - a.base_experience:0
     }
   })
 })
@@ -84,7 +83,7 @@ const nameWord = ref('')
 <template>
   <div class="vw100 vh100 ovh flxC aiC">
     <div class='fl1 flxR wfull p20 bbox yauto flexwrap gap16'>
-      <Card v-for="item in resultList" :key="item.name" :role="item" />
+      <Card v-for="item in resultList" :key="item?.name" :role="item ?? undefined" />
     </div>
     <div class="flxR h60 aiC jcC">
       <pagenation :page="page.index" :total="totalPages" @jump="jumpPage" />

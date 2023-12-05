@@ -1,5 +1,5 @@
 <template>
-  <div class="w330 h200 bdr8 pb5 bbox bcgray flxC aiC jcC">
+  <div class="w330 h200 bdr8 pb5 bbox bcgray flxC aiC jcC" v-if="props.role" >
     <div class="flxR aiC wfull jcSB">
       <img :src="props.role.img" class="w100 h100" />
       <div class="fl1 taC fs24 fwb">{{ props.role.name }}</div>
@@ -20,10 +20,11 @@
       </div>
     </div>
   </div>
+  <div class="w330 h200 bdr8 pb5 bbox bcgray flxC aiC jcC" v-else ></div>
 </template>
 
 <script lang='ts' setup>
-import { defineProps, defineEmits } from 'vue';
+import { defineProps } from 'vue';
 type nameType = {
   name: string,
   url: string
@@ -37,7 +38,7 @@ type detailType = {
 }
 type roleType = nameType & detailType
 const props = defineProps<{
-  role: roleType
+  role: roleType | undefined
 }>()
 
 </script>
